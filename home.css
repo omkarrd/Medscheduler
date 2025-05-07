@@ -1,0 +1,382 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #f4f9fc;
+  background-image: url('/Clg project/actual project/images/bg.jpg');
+  background-size: cover;
+  background-attachment: fixed;
+}
+
+header {
+  background-color: #213346;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header img {
+  height: 40px;
+}
+
+nav {
+  position: relative;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+}
+
+nav ul li {
+  margin: 0 15px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav ul li a:hover {
+  text-decoration: underline;
+}
+
+.menu-toggle {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.menu-toggle div {
+  width: 25px;
+  height: 3px;
+  background: white;
+  margin: 3px 0;
+}
+
+.menu {
+  display: flex;
+}
+
+.logo {
+  margin: 0;
+  background: transparent; 
+  height: 50px;
+}
+
+@media (max-width: 768px) {
+  .menu {
+      display: none;
+      flex-direction: column;
+      background-color: #213346;
+      position: absolute;
+      top: 50px;
+      right: 0;
+      width: 100%;
+      text-align: center;
+  }
+  .menu.active {
+      display: flex;
+      width: 100px;
+      border-radius: 10px;
+  }
+  .menu-toggle {
+      display: flex;
+  }
+  nav ul {
+      flex-direction: column;
+  }
+  nav ul li {
+      margin: 10px 0;
+  }
+}
+
+section {
+  padding: 20px;
+  margin: 30px 0; /* Consistent vertical margin */
+}
+
+.home-section, .upload-section, .schedule-section, .about-section, .history-section, .reminders-section, #reminders, #data {
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px auto; /* Centered with consistent margin */
+  max-width: 800px;
+  padding: 20px; /* Consistent padding */
+}
+
+.home-section h2, .about-section h2, .history-section h2 {
+  color: #007bff;
+}
+
+.btn {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  margin: 5px; /* Consistent margin for buttons */
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+.upload-section, .schedule-section, .history-section {
+  margin-top: 30px;
+}
+
+.btn-primary, .btn-danger {
+  background: #007bff;
+  border: none;
+  color: #fff;
+  padding: 10px 15px;
+  margin: 5px; /* Consistent margin */
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  background: #0056b3;
+}
+
+.btn-danger {
+  background: #dc3545;
+}
+
+.btn-danger:hover {
+  background: #c82333;
+}
+
+#upload-area {
+  border: 2px dashed #007bff;
+  padding: 40px;
+  text-align: center;
+  cursor: pointer;
+}
+
+#file-name {
+  margin: 10px 0;
+  font-style: italic;
+}
+
+.schedule-item, .reminder-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+  background: #f1f1f1;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+label, input, select {
+  margin: 5px 0;
+}
+
+.history-list {
+  list-style: none;
+  padding: 0;
+}
+
+.history-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f1f1f1;
+  padding: 15px;
+  border-radius: 5px;
+  margin: 10px 0;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+#custom-alert .btn-danger {
+  font-size: 16px;
+  padding: 8px 16px;
+  margin-top: 10px;
+}
+
+/* Consistent styling for medicine entries */
+.medicine-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.medicine-entry label {
+  flex: 1;
+  font-weight: bold;
+}
+
+.medicine-entry input, .medicine-entry select {
+  padding: 5px;
+  margin: 0 5px;
+  font-size: 14px;
+}
+.reminder-section {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px auto; /* Centered with consistent margin */
+    max-width: 800px; /* Limit the width */
+    padding: 20px; /* Consistent padding */
+}
+
+.medicine-entry {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px; /* Space between entries */
+}
+
+.medicine-entry label {
+    flex: 1; /* Allow label to take available space */
+    font-weight: bold;
+    margin-right: 10px; /* Space between label and input */
+}
+
+.medicine-entry input {
+    flex: 2; /* Allow input to take more space */
+    padding: 8px; /* Padding for input fields */
+    font-size: 14px;
+    border: 1px solid #ccc; /* Border for input fields */
+    border-radius: 5px; /* Rounded corners */
+}
+
+.button-group {
+    display: flex;
+    justify-content: center; /* Center buttons */
+    margin-top: 20px; /* Space above buttons */
+}
+
+.btn {
+    margin: 0 10px; /* Space between buttons */
+}
+@keyframes fadeSlideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.home-section h2,
+.home-section p {
+  opacity: 0;
+  animation: fadeSlideUp 1s ease-out forwards;
+}
+
+.home-section h2 {
+  animation-delay: 0.3s;
+}
+
+.home-section p {
+  animation-delay: 0.6s;
+}
+@keyframes slideReveal {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.schedule-section h2,
+.schedule-section #dynamic-schedule {
+  opacity: 0;
+  transform: translateX(-50px);
+  animation: slideReveal 1s ease-out forwards;
+}
+.home-section {
+  padding: 40px 20px;
+  text-align: center;
+ 
+  border-radius: 12px;
+}
+
+
+/* Add some stagger delay for cool effect */
+.schedule-section h2 {
+  animation-delay: 0.2s;
+}
+
+.schedule-section #dynamic-schedule {
+  animation-delay: 0.6s;
+}
+.schedule-section {
+  padding: 40px 20px;
+  background-color: #f4f9ff;
+  border-radius: 12px;
+  text-align: center;
+}
+.bouncy-dots::after {
+  content: '.';
+  animation: bounceDots 1s steps(1, end) infinite;
+}
+
+@keyframes bounceDots {
+  0% {
+    content: '.';
+  }
+  33% {
+    content: '..';
+  }
+  66% {
+    content: '...';
+  }
+  100% {
+    content: '.';
+  }
+}
+
+.cascading-text span {
+  opacity: 0;
+  display: inline-block;
+  transform: translateY(20px);
+  animation: cascade 0.6s forwards;
+}
+
+.cascading-text span:nth-child(1)  { animation-delay: 0s; }
+.cascading-text span:nth-child(2)  { animation-delay: 0.05s; }
+.cascading-text span:nth-child(3)  { animation-delay: 0.1s; }
+.cascading-text span:nth-child(4)  { animation-delay: 0.15s; }
+.cascading-text span:nth-child(5)  { animation-delay: 0.2s; }
+.cascading-text span:nth-child(6)  { animation-delay: 0.25s; }
+.cascading-text span:nth-child(7)  { animation-delay: 0.3s; }
+.cascading-text span:nth-child(8)  { animation-delay: 0.35s; }
+.cascading-text span:nth-child(9)  { animation-delay: 0.4s; }
+.cascading-text span:nth-child(10) { animation-delay: 0.45s; }
+.cascading-text span:nth-child(11) { animation-delay: 0.5s; }
+.cascading-text span:nth-child(12) { animation-delay: 0.55s; }
+.cascading-text span:nth-child(13) { animation-delay: 0.6s; }
+.cascading-text span:nth-child(14) { animation-delay: 0.65s; }
+.cascading-text span:nth-child(15) { animation-delay: 0.7s; }
+.cascading-text span:nth-child(16) { animation-delay: 0.75s; }
+.cascading-text span:nth-child(17) { animation-delay: 0.8s; }
+
+@keyframes cascade {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+html {
+  scroll-behavior: smooth;
+}

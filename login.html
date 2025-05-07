@@ -1,0 +1,43 @@
+        
+
+<html>
+    <head>
+<link rel="stylesheet" href="loginstyle.css">
+<script>
+     function show(){
+                var x=document.getElementById("myinput");
+                if(x.type=="password"){
+                    x.type="text";
+                }else{
+                    x.type="password";
+                }
+            }
+</script>
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/fonts/font/bootstrap-icons.css">
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+            <table >
+                <div class="box" >
+                    <h1>Login</h1>
+                    <input  class="ID" type="email" placeholder="Email"><br/><br>
+                    <input class="pass" type="password" placeholder="Password" id="myinput"><br/><br>
+                    <input type="checkbox" class="check" onclick="show()"/>Show Password <br><br>
+                    
+                    <a href="index.html"><button class="btn btn-primary"><b>Sign in</b></button></a>
+                    <h5 class="up">Forgot <a href="us.html">Username</a> / <a href="ps.html">Password</a>?</h5>
+                    <h5 class="su">Don't have an account? <a href="sign.html">Sign up</a></h5><br><br>
+                </div>
+            </table>
+
+        </div>
+        
+
+        
+            
+        
+    
+    </body>
+</html>

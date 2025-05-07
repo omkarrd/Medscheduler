@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medscheduler</title>
+  <link rel="stylesheet" href="home.css">  
+  <link rel="stylesheet" href="/css/bootstrap.min.css">  
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+
+  <script src="/js/jquery.min.js"></script>
+  <script src="/js/bootstrap.min.js"></script>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/Clg project/actual project/images/favicon-32x32.png">
+</head> 
+
+<body>
+
+
+<header>
+    <img src="images/logo-removebg-preview.png" alt="Medscheduler logo" class="logo">
+
+    <nav>
+        <div class="menu-toggle" onclick="toggleMenu()">  
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+
+        <ul class="menu">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#upload">Upload</a></li>
+            <li><a href="#schedule">Schedule</a></li>
+            <li><a href="#reminders">Reminders</a></li>
+            <li><a href="#history">History</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+    </nav>
+</header>
+    
+<main>
+    <section id="home" class="home-section" data-aos="fade-up">
+        <h2>Welcome to Medscheduler</h2>
+        <p id="typewriter-text" data-aos="fade-up">Your ultimate tool to manage your medicines and schedule reminders effortlessly.</p>
+
+    </section>
+
+    <section id="upload" class="upload-section" data-aos="zoom-in">
+        <h2>Upload Prescription<span class="bouncy-dots"></span></h2>
+
+        <div id="upload-area" onclick="document.getElementById('file-input').click();">
+            Drag & Drop Prescription or Click to Upload
+        </div>
+        <input type="file" id="file-input" accept="image/*,application/pdf" onchange="showFileName(event)">
+        <div id="file-name">No file selected</div>
+        <button onclick="uploadFile(event)" class="btn btn-primary">Upload</button>
+        
+    </section>
+
+    <section id="schedule" class="schedule-section" data-aos="fade-left">
+        <h2>Schedule</h2>
+        <div id="dynamic-schedule">
+            <p>No medicines scheduled yet.</p>
+        </div>
+    </section>
+
+    <section id="data" class="data-section" data-aos="fade-right">
+        <h2>Extracted Medicine Data</h2>
+        <table id="medicine-table" class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Medicine Name</th>
+                    <th>Quantity</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </section>
+  
+    <section id="reminders" class="reminder-section" data-aos="flip-up">
+        <h2 class="cascading-text">
+            <span>S</span><span>e</span><span>t</span> 
+            <span>M</span><span>a</span><span>n</span><span>u</span><span>a</span><span>l</span> 
+            <span>R</span><span>e</span><span>m</span><span>i</span><span>n</span><span>d</span><span>e</span><span>r</span>
+          </h2>
+          
+        <div class="medicine-entry">
+            <label for="reminder-name">Medicine Name:</label>
+            <input type="text" id="reminder-name" placeholder="Enter medicine name">
+        </div>
+        <div class="medicine-entry">
+            <label for="reminder-dose">Dosage:</label>
+            <input type="number" id="reminder-dose" placeholder="Dosage">
+        </div>
+        <div class="medicine-entry">
+            <label for="reminder-time">Time:</label>
+            <input type="time" id="reminder-time">
+        </div>
+        <div class="button-group">
+            <button onclick="setManualReminder()" class="btn btn-primary">Add Reminder</button>
+            <button onclick="stopReminder()" class="btn btn-danger">Stop Alert</button>
+        </div>
+        
+        <audio id="reminder-audio" loop>
+            <source src="deepika_1743751232646.mp3" type="audio/mpeg">
+        </audio>
+    </section>
+      
+    <div id="custom-alert" style="display: none; position: fixed; top: 30%; left: 50%; transform: translate(-50%, -30%); z-index: 9999; background: white; border: 2px solid #ccc; padding: 20px; border-radius: 10px; text-align: center; box-shadow: 0 0 15px rgba(0,0,0,0.2);">
+        <p id="alert-message" style="margin-bottom: 20px; font-size: 18px;"></p>
+        <button onclick="stopReminder()" class="btn btn-danger">Stop</button>
+    </div>
+  
+    <section id="history" class="history-section" data-aos="fade-up">
+        <h2>History</h2>
+        <ul id="history-list" class="history-list"></ul>
+    </section>
+</main>
+
+<script>
+    
+    function showFileName(event) {
+        const file = event.target.files[0];
+        const fileNameDisplay = document.getElementById('file-name');
+        fileNameDisplay.textContent = file ? file.name : 'No file selected';
+    }
+    
+    function uploadFile(event) {
+        event.preventDefault(); // Prevent the default form submission
+
+        const fileInput = document.getElementById("file-input");
+        const file = fileInput.files[0];
+
+        if (!file) {
+            alert("Please select a file first!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        fetch("http://127.0.0.1:5000/upload", {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); // Debugging line
+            addToHistory(`Uploaded: ${file.name}`);
+
+            if (data.medicines && data.medicines.length > 0) {
+                updateSchedule(data.medicines);
+                updateDataTable(data.medicines);
+                data.medicines.forEach((med, i) => {
+                    autoSetReminder(med.name, med.quantity, i);
+                });
+            } else {
+                alert("No medicines extracted from the prescription.");
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            alert("Failed to upload. Please try again.");
+        });
+    }
+    
+    function setManualReminder() {
+        const name = document.getElementById('reminder-name').value;
+        const dose = document.getElementById('reminder-dose').value;
+        const time = document.getElementById('reminder-time').value;
+
+        if (!name || !dose || !time) {
+            alert("Please fill all fields.");
+            return;
+        }
+
+        addToHistory(`${name} - ${dose} tablets at ${time}`);
+
+        const now = new Date();
+        const [hours, minutes] = time.split(":");
+        const reminderTime = new Date();
+        reminderTime.setHours(hours, minutes, 0, 0);
+
+        if (reminderTime < now) {
+            reminderTime.setDate(reminderTime.getDate() + 1);
+        }
+
+        const timeoutDuration = reminderTime - now;
+
+        setTimeout(() => {
+            triggerReminderAlert(name, dose, time);
+        }, timeoutDuration);
+    }
+    function triggerReminderAlert(name, dose, time) {
+    const message = `⏰ Time to take ${dose} tablets of ${name} at ${time}!`;
+    document.getElementById("alert-message").textContent = message;
+    document.getElementById("custom-alert").style.display = "block";
+
+    const audio = document.getElementById("reminder-audio");
+    audio.play();
+
+    if (navigator.vibrate) {
+        vibrating = true;
+        reminderInterval = setInterval(() => {
+            if (vibrating) {
+                navigator.vibrate([500, 300, 500]);
+            }
+        }, 1500);
+    }
+
+    // Set a timeout to stop the reminder after 5 minutes
+    setTimeout(() => {
+        stopReminder();
+        addToHistory(`🤕 Missed: ${name} - ${dose} tablets at ${time}`);
+    }, 20000); // 5 minutes in milliseconds
+}
+
+function stopReminder() {
+    const audio = document.getElementById("reminder-audio");
+    audio.pause();
+    audio.currentTime = 0;
+
+    vibrating = false;
+    if (reminderInterval) {
+        clearInterval(reminderInterval);
+    }
+    navigator.vibrate(0); // Stop vibration
+
+    document.getElementById("custom-alert").style.display = "none";
+}
+
+function addToHistory(text) {
+    const historyList = document.getElementById('history-list');
+    const li = document.createElement('li');
+
+    li.innerHTML = `
+        <span>${text}</span>
+        <button class="btn btn-danger" onclick="deleteHistoryItem(this)">🗑️ Delete</button>
+    `;
+
+    historyList.appendChild(li);
+}
+    function addToHistory(text) {
+        const historyList = document.getElementById('history-list');
+        const li = document.createElement('li');
+
+        li.innerHTML = `
+            <span>${text}</span>
+            <button class="btn btn-danger" onclick="deleteHistoryItem(this)">🗑️ Delete</button>
+        `;
+
+        historyList.appendChild(li);
+    }
+
+    function deleteHistoryItem(button) {
+        const li = button.parentElement;
+        li.remove();
+    }
+
+    function updateSchedule(medicines) {
+        const scheduleContainer = document.getElementById("dynamic-schedule");
+        scheduleContainer.innerHTML = "";
+
+        medicines.forEach(med => {
+            addToHistory(`${med.name} - ${med.quantity} tablets`);
+        });
+    }
+
+    function updateDataTable(medicines) {
+        const tableBody = document.querySelector("#medicine-table tbody");
+        tableBody.innerHTML = "";
+
+        medicines.forEach(med => {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td>${med.name}</td><td>${med.quantity}</td>`;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function autoSetReminder(name, dose, index) {
+        const now = new Date();
+        now.setMinutes(now.getMinutes() + (2 * index)); // stagger reminders
+        const timeString = now.toTimeString().slice(0, 5); // "HH:MM"
+
+        document.getElementById('reminder-name').value = name;
+        document.getElementById('reminder-dose').value = dose;
+        document.getElementById('reminder-time').value = timeString;
+
+        setManualReminder();
+    }
+
+    function toggleMenu() {
+        const menu = document.querySelector('.menu');
+        menu.classList.toggle('active');
+        
+        if (menu.classList.contains('active')) {
+            document.addEventListener('click', closeMenuOnClickOutside);
+        } else {
+            document.removeEventListener('click', closeMenuOnClickOutside);
+        }
+    }
+
+    function closeMenuOnClickOutside(event) {
+        const menu = document.querySelector('.menu');
+        const toggleButton = document.querySelector('.menu-toggle');
+
+        if (!menu.contains(event.target) && !toggleButton.contains(event.target)) {
+            menu.classList.remove('active');
+            document.removeEventListener('click', closeMenuOnClickOutside);
+        }
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+    AOS.init({
+      duration: 1000,
+      once: false,
+      mirror: true,
+    });
+    
+  </script>
+  
+
+
+</body>
+</html>
